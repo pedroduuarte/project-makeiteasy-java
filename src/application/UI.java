@@ -35,6 +35,51 @@ public class UI {
 		System.out.println("====================================");
 		System.out.println(ANSI_RESET);
 	}
+	
+	public static User signIn(Scanner sc) {
+		try {
+			System.out.println("We need just some informations to make your account!");
+			sc.nextLine();
+			System.out.print("Name: ");
+			String name = sc.nextLine();
+
+			System.out.print("CPF (only numbers): ");
+			String cpf = sc.nextLine();
+			if (!cpf.matches("\\d{11}")) {
+				throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+			}
+
+			System.out.print("E-mail: ");
+			String email = sc.nextLine();
+			if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+				throw new DomainException("Invalid email format!");
+			}
+
+			System.out.print("Birth date (dd/MM/yyyy): ");
+			LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			sc.nextLine();
+
+			System.out.print("Phone number: ");
+			String phoneNumber = sc.nextLine();
+
+			System.out.print("Address: ");
+			String address = sc.nextLine();
+
+			User newUser = new User(name, cpf, email, birthDate, phoneNumber, address);
+			usersList.add(newUser);
+
+			System.out.println("Account created successfully! Welcome " + newUser.getName());
+			return newUser;
+
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please try again.");
+		} catch (DateTimeParseException e) {
+			System.out.println("Invalid date format! Please use dd/MM/yyyy.");
+		} catch (DomainException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
 
 	public static User login(Scanner sc) {
 		System.out.print("Do you already have an account on our system? (y/n) ");
@@ -45,47 +90,7 @@ public class UI {
 		}
 
 		if (answer.equalsIgnoreCase("n")) {
-			try {
-				System.out.println("We need just some informations to make your account!");
-				sc.nextLine();
-				System.out.print("Name: ");
-				String name = sc.nextLine();
-
-				System.out.print("CPF (only numbers): ");
-				String cpf = sc.nextLine();
-				if (!cpf.matches("\\d{11}")) {
-					throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
-				}
-
-				System.out.print("E-mail: ");
-				String email = sc.nextLine();
-				if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-					throw new DomainException("Invalid email format!");
-				}
-
-				System.out.print("Birth date (dd/MM/yyyy): ");
-				LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-				sc.nextLine();
-
-				System.out.print("Phone number: ");
-				String phoneNumber = sc.nextLine();
-
-				System.out.print("Address: ");
-				String address = sc.nextLine();
-
-				User newUser = new User(name, cpf, email, birthDate, phoneNumber, address);
-				usersList.add(newUser);
-
-				System.out.println("Account created successfully! Welcome " + newUser.getName());
-				return newUser;
-
-			} catch (InputMismatchException e) {
-				System.out.println("Error reading your data.");
-			} catch (DateTimeParseException e) {
-				System.out.println("Invalid date format! Please use dd/MM/yyyy.");
-			} catch (DomainException e) {
-				System.out.println(e.getMessage());
-			}
+			signIn(sc);
 		} else {
 			if (usersList.isEmpty()) {
 				System.out.println("No users found! Please create an account first.");
