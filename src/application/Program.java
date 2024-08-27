@@ -34,6 +34,11 @@ public class Program {
 					loggedUser = UI.login(sc);
 					break;
 				}
+				
+				case 2: {
+					loggedUser = UI.createAnAccount(sc);
+					break;
+				}
 
 				case 3: {
 					UI.createAnEvent(sc, loggedUser);

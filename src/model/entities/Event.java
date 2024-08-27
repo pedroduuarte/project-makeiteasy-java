@@ -123,6 +123,7 @@ public class Event {
 		}
 
 		usersOnTheEvent.add(user);
+		user.addParticipatedEvent(this);
 		System.out.println("User " + user.getName() + " is now participating in the event!");
 		return true;
 	}

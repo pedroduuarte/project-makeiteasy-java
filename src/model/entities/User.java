@@ -1,8 +1,9 @@
 package model.entities;
 
 import java.time.LocalDate;
-
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 
@@ -12,7 +13,11 @@ public class User {
 	private LocalDate birthDate;
 	private String phoneNumber;
 	private String address;
-
+	
+	List<Event> createdEvents = new ArrayList<>();
+	List<Event> participatedEvents = new ArrayList<>();
+	
+	
 	public User(String name, String cpf, String email, LocalDate birthDate, String phoneNumber, String address) {
 		this.name = name;
 		this.cpf = cpf;
@@ -66,6 +71,22 @@ public class User {
 		LocalDate currentDate = LocalDate.now();
 		int age = Period.between(birthDate, currentDate).getYears();
 		return age;
+	}
+
+	public List<Event> getCreatedEvents() {
+		return createdEvents;
+	}
+
+	public void addCreatedEvent(Event event) {
+		createdEvents.add(event);
+	}
+	
+	public List<Event> getParticipatedEvents() {
+		return participatedEvents;
+	}
+	
+	public void addParticipatedEvent(Event event) {
+		participatedEvents.add(event);
 	}
 
 	public String toString() {

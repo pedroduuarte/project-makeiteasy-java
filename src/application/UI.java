@@ -36,10 +36,20 @@ public class UI {
 		System.out.println(ANSI_RESET);
 	}
 	
-	public static User signIn(Scanner sc) {
+	public static void menuEventCreator() {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
+		System.out.println("=============== EVENT MENU ===============");
+		System.out.println("| 1. See all participants                 |");
+		System.out.println("| 2. Remove a participant from the event. |");
+		System.out.println("| 3. See all payment from the event.      |");
+		System.out.println("==========================================");
+		System.out.println(ANSI_RESET);
+	}
+	
+	public static User createAnAccount(Scanner sc) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		try {
 			System.out.println("We need just some informations to make your account!");
-			sc.nextLine();
 			System.out.print("Name: ");
 			String name = sc.nextLine();
 
@@ -78,6 +88,7 @@ public class UI {
 		} catch (DomainException e) {
 			System.out.println(e.getMessage());
 		}
+		System.out.println(ANSI_RESET);
 		return null;
 	}
 
@@ -90,7 +101,7 @@ public class UI {
 		}
 
 		if (answer.equalsIgnoreCase("n")) {
-			signIn(sc);
+			createAnAccount(sc);
 		} else {
 			if (usersList.isEmpty()) {
 				System.out.println("No users found! Please create an account first.");
@@ -195,6 +206,7 @@ public class UI {
 	}
 
 	public static boolean processPayment(User user, Event event, Scanner sc) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		if (!event.getDemandsPayment()) {
 			System.out.println("This event don't requires payment.");
 			return true;
@@ -264,7 +276,36 @@ public class UI {
 		if (choosenEvent.addParticipantInTheEvent(user)) {
 			System.out.println("You're participating at this event!");
 		}
+		System.out.println(ANSI_RESET);
 
+	}
+	
+	public static void showUserEvents(User user) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
+		if (user == null) {
+			throw new NotLoggedException("You need to be logged to see your events.");
+		}
+		
+		System.out.println("Events created by you:");
+		if (user.getCreatedEvents().isEmpty()) {
+			System.out.println("You haven't created any events yet.");
+		}
+		else {
+			for (Event createdEvent : user.getCreatedEvents()) {
+				System.out.println(createdEvent);
+			}
+		}
+		
+		System.out.println("Events you participated:");
+		if (user.getParticipatedEvents().isEmpty()) {
+			System.out.println("You haven't participated in any events yet.");
+		}
+		else {
+			for (Event participatedEvent : user.getParticipatedEvents()) {
+				System.out.println(participatedEvent);
+			}
+		}
+		System.out.println(ANSI_RESET);
 	}
 
 }
