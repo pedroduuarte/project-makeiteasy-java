@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.entities.Event;
+import model.entities.Organizer;
+import model.entities.Participant;
 import model.entities.Payment;
 import model.entities.User;
 import model.exceptions.DomainException;
@@ -30,78 +32,93 @@ public class UI {
 		System.out.println("| 2. Create an account             |");
 		System.out.println("| 3. Create a new event            |");
 		System.out.println("| 4. Join an event                 |");
-		System.out.println("| 5. Check all your created events |");
-		System.out.println("| 6. Exit                          |");
+		System.out.println("| 5. Exit                          |");
 		System.out.println("====================================");
 		System.out.println(ANSI_RESET);
 	}
 	
-	public static void menuEventCreator() {
+	public static void menuEventOrganzier() {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		System.out.println("=============== EVENT MENU ===============");
 		System.out.println("| 1. See all participants                 |");
 		System.out.println("| 2. Remove a participant from the event. |");
 		System.out.println("| 3. See all payment from the event.      |");
+		System.out.println("| 4. See all your events created          |");
 		System.out.println("==========================================");
 		System.out.println(ANSI_RESET);
 	}
 	
 	public static User createAnAccount(Scanner sc) {
-		System.out.println(ANSI_PURPLE_BACKGROUND);
-		try {
-			System.out.println("We need just some informations to make your account!");
-			System.out.print("Name: ");
-			String name = sc.nextLine();
+	    System.out.println(ANSI_PURPLE_BACKGROUND);
+	    User newUser = null;
+	    try {
+	        System.out.println("We need just some informations to make your account!");
+	        System.out.print("Name: ");
+	        String name = sc.nextLine();
 
-			System.out.print("CPF (only numbers): ");
-			String cpf = sc.nextLine();
-			if (!cpf.matches("\\d{11}")) {
-				throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
-			}
+	        System.out.print("CPF (only numbers): ");
+	        String cpf = sc.nextLine();
+	        if (!cpf.matches("\\d{11}")) {
+	            throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+	        }
 
-			System.out.print("E-mail: ");
-			String email = sc.nextLine();
-			if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-				throw new DomainException("Invalid email format!");
-			}
+	        System.out.print("E-mail: ");
+	        String email = sc.nextLine();
+	        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+	            throw new DomainException("Invalid email format!");
+	        }
 
-			System.out.print("Birth date (dd/MM/yyyy): ");
-			LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-			sc.nextLine();
+	        System.out.print("Birth date (dd/MM/yyyy): ");
+	        LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	        sc.nextLine();
 
-			System.out.print("Phone number: ");
-			String phoneNumber = sc.nextLine();
+	        System.out.print("Phone number: ");
+	        String phoneNumber = sc.nextLine();
 
-			System.out.print("Address: ");
-			String address = sc.nextLine();
+	        System.out.print("Address: ");
+	        String address = sc.nextLine();
 
-			User newUser = new User(name, cpf, email, birthDate, phoneNumber, address);
-			usersList.add(newUser);
+	        System.out.println("What type of account you want to create? Event organizer or Event participant?");
+	        System.out.print("Type 'o' for ORGANIZER or type 'p' for PARTICIPANT: ");
+	        
+	        String accountType = sc.next();
+	        sc.nextLine();
 
-			System.out.println("Account created successfully! Welcome " + newUser.getName());
-			return newUser;
+	        if (accountType.equalsIgnoreCase("o")) {
+	            newUser = new Organizer(name, cpf, email, birthDate, phoneNumber, address);
+	        } else if (accountType.equalsIgnoreCase("p")) {
+	            newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
+	        } else {
+	            throw new DomainException("Please input a valid option. 'o' or 'p'.");
+	        }
 
-		} catch (InputMismatchException e) {
-			System.out.println("Invalid input format. Please try again.");
-		} catch (DateTimeParseException e) {
-			System.out.println("Invalid date format! Please use dd/MM/yyyy.");
-		} catch (DomainException e) {
-			System.out.println(e.getMessage());
-		}
-		System.out.println(ANSI_RESET);
-		return null;
+	        usersList.add(newUser);
+	        System.out.println("Account created successfully! Welcome " + newUser.getName());
+
+	    } catch (InputMismatchException e) {
+	        System.out.println("Invalid input format. Please try again.");
+	    } catch (DateTimeParseException e) {
+	        System.out.println("Invalid date format! Please use dd/MM/yyyy.");
+	    } catch (DomainException e) {
+	        System.out.println(e.getMessage());
+	    } finally {
+	        System.out.println(ANSI_RESET);
+	    }
+
+	    return newUser;
 	}
 
 	public static User login(Scanner sc) {
 		System.out.print("Do you already have an account on our system? (y/n) ");
 		String answer = sc.next();
+		sc.nextLine();
 
 		if (!answer.equalsIgnoreCase("y") && !answer.equalsIgnoreCase("n")) {
 			throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
 		}
 
 		if (answer.equalsIgnoreCase("n")) {
-			createAnAccount(sc);
+			return createAnAccount(sc);
 		} else {
 			if (usersList.isEmpty()) {
 				System.out.println("No users found! Please create an account first.");
@@ -126,6 +143,10 @@ public class UI {
 	public static void createAnEvent(Scanner sc, User user) {
 		if (user == null) {
 			System.out.println("You need to sign in first.");
+			return;
+		}
+		if (!(user instanceof Organizer)) {
+			System.out.println("Only organizers can create events. Please sign in with an organizer account.");
 			return;
 		}
 		System.out.println(ANSI_PURPLE_BACKGROUND);
@@ -241,6 +262,9 @@ public class UI {
 		if (user == null) {
 			throw new NotLoggedException("You need to be logged to join an event.");
 		}
+		if (!(user instanceof Participant)) {
+			throw new DomainException("This account it is not a Participant account.");
+		}
 
 		if (eventsCreated.isEmpty()) {
 			System.out.println("There is no events created yet.");
@@ -286,26 +310,37 @@ public class UI {
 			throw new NotLoggedException("You need to be logged to see your events.");
 		}
 		
-		System.out.println("Events created by you:");
-		if (user.getCreatedEvents().isEmpty()) {
-			System.out.println("You haven't created any events yet.");
-		}
-		else {
-			for (Event createdEvent : user.getCreatedEvents()) {
-				System.out.println(createdEvent);
+		if (user instanceof Organizer) {
+			Organizer organizer = (Organizer) user;
+			List<Event> createdEvents = organizer.getCreatedEvents();
+			
+			if (createdEvents.isEmpty()) {
+				System.out.println("You have not created any events yet.");
+			}
+			else {
+				System.out.println("Events created by you:");
+				for (Event event : createdEvents) {
+					System.out.println(event);
+				}
 			}
 		}
-		
-		System.out.println("Events you participated:");
-		if (user.getParticipatedEvents().isEmpty()) {
-			System.out.println("You haven't participated in any events yet.");
-		}
-		else {
-			for (Event participatedEvent : user.getParticipatedEvents()) {
-				System.out.println(participatedEvent);
+		else if (user instanceof Participant) {
+			Participant participant = (Participant) user;
+			List<Event> participatedEvents = participant.getParticipatedEvents();
+			
+			if (participatedEvents.isEmpty()) {
+				System.out.println("You have not participated any events yet.");
+			}
+			else {
+				System.out.println("Events participated by you:");
+				for (Event event : participatedEvents) {
+					System.out.println(event);
+				}
 			}
 		}
+		else {
+			System.out.println("Invalid user type.");
+		}		
 		System.out.println(ANSI_RESET);
 	}
-
 }

@@ -114,16 +114,17 @@ public class Event {
 	}
 
 	public boolean addParticipantInTheEvent(User user) {
-		if (!checkIfTheParticipantHasEnoughAge(user)) {
+		Participant participant = (Participant) user;
+		if (!checkIfTheParticipantHasEnoughAge(participant)) {
 			System.out.println("User " + user.getName() + " cannot participate in this event because it's for +18 years");
 			return false;
 		}
-		if (usersOnTheEvent.contains(user)) {
-			throw new DomainException("User" + user.getName() + " is already participating in this event.");
+		if (usersOnTheEvent.contains(participant)) {
+			throw new DomainException("User" + participant.getName() + " is already participating in this event.");
 		}
 
 		usersOnTheEvent.add(user);
-		user.addParticipatedEvent(this);
+		participant.addParticipatedEvent(this);
 		System.out.println("User " + user.getName() + " is now participating in the event!");
 		return true;
 	}
