@@ -32,80 +32,81 @@ public class UI {
 		System.out.println("| 2. Create an account             |");
 		System.out.println("| 3. Create a new event            |");
 		System.out.println("| 4. Join an event                 |");
-		System.out.println("| 5. Exit                          |");
+		System.out.println("| 5. Acess organizer menu          |");
+		System.out.println("| 6. Exit                          |");
 		System.out.println("====================================");
 		System.out.println(ANSI_RESET);
 	}
-	
+
 	public static void menuEventOrganzier() {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		System.out.println("=============== EVENT MENU ===============");
 		System.out.println("| 1. See all participants                 |");
 		System.out.println("| 2. Remove a participant from the event. |");
-		System.out.println("| 3. See all payment from the event.      |");
+		System.out.println("| 3. See all payments from the event.      |");
 		System.out.println("| 4. See all your events created          |");
 		System.out.println("==========================================");
 		System.out.println(ANSI_RESET);
 	}
-	
+
 	public static User createAnAccount(Scanner sc) {
-	    System.out.println(ANSI_PURPLE_BACKGROUND);
-	    User newUser = null;
-	    try {
-	        System.out.println("We need just some informations to make your account!");
-	        System.out.print("Name: ");
-	        String name = sc.nextLine();
+		System.out.println(ANSI_PURPLE_BACKGROUND);
+		User newUser = null;
+		try {
+			System.out.println("We need just some informations to make your account!");
+			System.out.print("Name: ");
+			String name = sc.nextLine();
 
-	        System.out.print("CPF (only numbers): ");
-	        String cpf = sc.nextLine();
-	        if (!cpf.matches("\\d{11}")) {
-	            throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
-	        }
+			System.out.print("CPF (only numbers): ");
+			String cpf = sc.nextLine();
+			if (!cpf.matches("\\d{11}")) {
+				throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+			}
 
-	        System.out.print("E-mail: ");
-	        String email = sc.nextLine();
-	        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-	            throw new DomainException("Invalid email format!");
-	        }
+			System.out.print("E-mail: ");
+			String email = sc.nextLine();
+			if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+				throw new DomainException("Invalid email format!");
+			}
 
-	        System.out.print("Birth date (dd/MM/yyyy): ");
-	        LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	        sc.nextLine();
+			System.out.print("Birth date (dd/MM/yyyy): ");
+			LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			sc.nextLine();
 
-	        System.out.print("Phone number: ");
-	        String phoneNumber = sc.nextLine();
+			System.out.print("Phone number: ");
+			String phoneNumber = sc.nextLine();
 
-	        System.out.print("Address: ");
-	        String address = sc.nextLine();
+			System.out.print("Address: ");
+			String address = sc.nextLine();
 
-	        System.out.println("What type of account you want to create? Event organizer or Event participant?");
-	        System.out.print("Type 'o' for ORGANIZER or type 'p' for PARTICIPANT: ");
-	        
-	        String accountType = sc.next();
-	        sc.nextLine();
+			System.out.println("What type of account you want to create? Event organizer or Event participant?");
+			System.out.print("Type 'o' for ORGANIZER or type 'p' for PARTICIPANT: ");
 
-	        if (accountType.equalsIgnoreCase("o")) {
-	            newUser = new Organizer(name, cpf, email, birthDate, phoneNumber, address);
-	        } else if (accountType.equalsIgnoreCase("p")) {
-	            newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
-	        } else {
-	            throw new DomainException("Please input a valid option. 'o' or 'p'.");
-	        }
+			String accountType = sc.next();
+			sc.nextLine();
 
-	        usersList.add(newUser);
-	        System.out.println("Account created successfully! Welcome " + newUser.getName());
+			if (accountType.equalsIgnoreCase("o")) {
+				newUser = new Organizer(name, cpf, email, birthDate, phoneNumber, address);
+			} else if (accountType.equalsIgnoreCase("p")) {
+				newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
+			} else {
+				throw new DomainException("Please input a valid option. 'o' or 'p'.");
+			}
 
-	    } catch (InputMismatchException e) {
-	        System.out.println("Invalid input format. Please try again.");
-	    } catch (DateTimeParseException e) {
-	        System.out.println("Invalid date format! Please use dd/MM/yyyy.");
-	    } catch (DomainException e) {
-	        System.out.println(e.getMessage());
-	    } finally {
-	        System.out.println(ANSI_RESET);
-	    }
+			usersList.add(newUser);
+			System.out.println("Account created successfully! Welcome " + newUser.getName());
 
-	    return newUser;
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input format. Please try again.");
+		} catch (DateTimeParseException e) {
+			System.out.println("Invalid date format! Please use dd/MM/yyyy.");
+		} catch (DomainException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			System.out.println(ANSI_RESET);
+		}
+
+		return newUser;
 	}
 
 	public static User login(Scanner sc) {
@@ -140,91 +141,108 @@ public class UI {
 		return null;
 	}
 
-	public static void createAnEvent(Scanner sc, User user) {
-		if (user == null) {
-			System.out.println("You need to sign in first.");
-			return;
-		}
-		if (!(user instanceof Organizer)) {
-			System.out.println("Only organizers can create events. Please sign in with an organizer account.");
-			return;
-		}
-		System.out.println(ANSI_PURPLE_BACKGROUND);
-		System.out.println("Let's create your Event!");
-		System.out.println("Type your event datas:");
-		System.out.print("Name: ");
-		String eventName = sc.nextLine();
-		System.out.print("Place: ");
-		String eventPlace = sc.nextLine();
-		System.out.print("Type a short description about this event: ");
-		String eventDescription = sc.nextLine();
-		LocalDateTime eventDate = null;
-		while (eventDate == null) {
-			try {
-				System.out.print("Event date (dd/MM/yyyy HH:mm): ");
-				String eventDateStr = sc.nextLine();
-				eventDate = LocalDateTime.parse(eventDateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-			} catch (DateTimeParseException e) {
-				System.out.println("Invalid date and hour! Please try again.");
-			}
-		}
+    public static void createAnEvent(Scanner sc, User user) {
+        if (user == null) {
+            System.out.println("You need to sign in first.");
+            return;
+        }
+        if (!(user instanceof Organizer)) {
+            System.out.println("Only organizers can create events. Please sign in with an organizer account.");
+            return;
+        }
+        
+        System.out.println("Let's create your Event!");
+        System.out.println("Type your event details:");
+        
+        System.out.print("Name: ");
+        String eventName = sc.nextLine();
+        
+        System.out.print("Place: ");
+        String eventPlace = sc.nextLine();
+        
+        System.out.print("Type a short description about this event: ");
+        String eventDescription = sc.nextLine();
+        
+        LocalDateTime eventDate = null;
+        while (eventDate == null) {
+            try {
+                System.out.print("Event date (dd/MM/yyyy HH:mm): ");
+                String eventDateStr = sc.nextLine();
+                eventDate = LocalDateTime.parse(eventDateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+                if (eventDate.isBefore(LocalDateTime.now())) {
+                    throw new DomainException("Event date must be a future date.");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date and hour format! Please try again.");
+            } catch (DomainException e) {
+                System.out.println("Error! " + e.getMessage());
+                eventDate = null;
+            }
+        }
 
-		boolean isRestrictedForMore18 = false;
-		while (true) {
-			System.out.print("Is this event restricted for +18? (y/n): ");
-			String answerRestrictedEvent = sc.next();
-			if (!answerRestrictedEvent.equalsIgnoreCase("y") && !answerRestrictedEvent.equalsIgnoreCase("n")) {
-				throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-			} else if (answerRestrictedEvent.equalsIgnoreCase("y")) {
-				isRestrictedForMore18 = true;
-				break;
-			} else if (answerRestrictedEvent.equalsIgnoreCase("n")) {
-				isRestrictedForMore18 = false;
-				break;
-			}
-		}
+        boolean isRestrictedForMore18 = false;
+        while (true) {
+            try {
+                System.out.print("Is this event restricted for +18? (y/n): ");
+                String answerRestrictedEvent = sc.next();
+                if (!answerRestrictedEvent.equalsIgnoreCase("y") && !answerRestrictedEvent.equalsIgnoreCase("n")) {
+                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+                }
+                isRestrictedForMore18 = answerRestrictedEvent.equalsIgnoreCase("y");
+                break;
+            } catch (DomainException e) {
+                System.out.println("Error! " + e.getMessage());
+            }
+        }
 
-		boolean demandsPayment = false;
-		double paymentAmount = 0.0;
-		while (true) {
-			System.out.print("The event demands payment to participate? (y/n): ");
-			String answerDemandsPayment = sc.next();
-			if (!answerDemandsPayment.equalsIgnoreCase("y") && !answerDemandsPayment.equalsIgnoreCase("n")) {
-				throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-			} else if (answerDemandsPayment.equalsIgnoreCase("y")) {
-				demandsPayment = true;
-				System.out.print("Type the payment's value: $ ");
-				paymentAmount = sc.nextDouble();
-				sc.nextLine();
-				break;
-			} else if (answerDemandsPayment.equalsIgnoreCase("n")) {
-				demandsPayment = false;
-				break;
-			}
-		}
+        boolean demandsPayment = false;
+        double paymentAmount = 0.0;
+        while (true) {
+            try {
+                System.out.print("The event demands payment to participate? (y/n): ");
+                String answerDemandsPayment = sc.next();
+                if (!answerDemandsPayment.equalsIgnoreCase("y") && !answerDemandsPayment.equalsIgnoreCase("n")) {
+                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+                }
+                demandsPayment = answerDemandsPayment.equalsIgnoreCase("y");
+                if (demandsPayment) {
+                    System.out.print("Type the payment's value: $ ");
+                    paymentAmount = sc.nextDouble();
+                    if (paymentAmount < 0) {
+                        throw new DomainException("Payment value cannot be negative.");
+                    }
+                    sc.nextLine();
+                }
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid value! Please enter a valid number.");
+                sc.nextLine();
+            } catch (DomainException e) {
+                System.out.println("Error! " + e.getMessage());
+            }
+        }
 
-		boolean demandsItems = false;
-		while (true) {
-			System.out.print("The event demands that participants bring items to participate? (y/n): ");
-			String answerDemandsItems = sc.next();
-			if (!answerDemandsItems.equalsIgnoreCase("y") && !answerDemandsItems.equalsIgnoreCase("n")) {
-				throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-			} else if (answerDemandsItems.equalsIgnoreCase("y")) {
-				demandsItems = true;
-				break;
-			} else if (answerDemandsItems.equalsIgnoreCase("n")) {
-				demandsItems = false;
-				break;
-			}
-		}
+        boolean demandsItems = false;
+        while (true) {
+            try {
+                System.out.print("The event demands that participants bring items to participate? (y/n): ");
+                String answerDemandsItems = sc.next();
+                if (!answerDemandsItems.equalsIgnoreCase("y") && !answerDemandsItems.equalsIgnoreCase("n")) {
+                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+                }
+                demandsItems = answerDemandsItems.equalsIgnoreCase("y");
+                break;
+            } catch (DomainException e) {
+                System.out.println("Error! " + e.getMessage());
+            }
+        }
 
-		Event newEvent = new Event(eventName, eventPlace, eventDescription, eventDate, isRestrictedForMore18,
-				demandsPayment, demandsItems, user, paymentAmount);
-		eventsCreated.add(newEvent);
-		System.out.println("Event created sussefully!");
-		System.out.println(ANSI_RESET);
+        Event newEvent = new Event(eventName, eventPlace, eventDescription, eventDate, isRestrictedForMore18, demandsPayment, demandsItems, user, paymentAmount);
+        Organizer organizer = (Organizer) user;
+        organizer.addCreatedEvent(newEvent);
+        System.out.println("Event created successfully!");
+    }
 
-	}
 
 	public static boolean processPayment(User user, Event event, Scanner sc) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
@@ -273,9 +291,9 @@ public class UI {
 
 		System.out.println("Please select an event to join:");
 		for (int i = 0; i < eventsCreated.size(); i++) {
-	        Event event = eventsCreated.get(i);
-	        System.out.println((i + 1) + ". " + event);
-	    }
+			Event event = eventsCreated.get(i);
+			System.out.println((i + 1) + ". " + event);
+		}
 
 		System.out.print("Type de number of the event you want to join: ");
 		int choiceChooseEvent = sc.nextInt();
@@ -286,9 +304,10 @@ public class UI {
 		}
 
 		Event choosenEvent = eventsCreated.get(choiceChooseEvent - 1);
-		
+
 		if (!choosenEvent.checkIfTheParticipantHasEnoughAge(user)) {
-			throw new DomainException("User " + user.getName() + " cannot participate in this event because it's for +18 years");
+			throw new DomainException(
+					"User " + user.getName() + " cannot participate in this event because it's for +18 years");
 		}
 
 		if (choosenEvent.getDemandsPayment()) {
@@ -303,44 +322,64 @@ public class UI {
 		System.out.println(ANSI_RESET);
 
 	}
-	
+
 	public static void showUserEvents(User user) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		if (user == null) {
 			throw new NotLoggedException("You need to be logged to see your events.");
 		}
-		
+
 		if (user instanceof Organizer) {
 			Organizer organizer = (Organizer) user;
 			List<Event> createdEvents = organizer.getCreatedEvents();
-			
+
 			if (createdEvents.isEmpty()) {
 				System.out.println("You have not created any events yet.");
-			}
-			else {
+			} else {
 				System.out.println("Events created by you:");
 				for (Event event : createdEvents) {
 					System.out.println(event);
 				}
 			}
-		}
-		else if (user instanceof Participant) {
+		} else if (user instanceof Participant) {
 			Participant participant = (Participant) user;
 			List<Event> participatedEvents = participant.getParticipatedEvents();
-			
+
 			if (participatedEvents.isEmpty()) {
 				System.out.println("You have not participated any events yet.");
-			}
-			else {
+			} else {
 				System.out.println("Events participated by you:");
 				for (Event event : participatedEvents) {
 					System.out.println(event);
 				}
 			}
-		}
-		else {
+		} else {
 			System.out.println("Invalid user type.");
-		}		
+		}
 		System.out.println(ANSI_RESET);
+	}
+
+	public static Event acessMenuEvent(User user, Scanner sc) {
+		if (!(user instanceof Organizer)) {
+			throw new DomainException("Please sign with an organizer account first.");
+		}
+		Organizer organizer = (Organizer) user;
+		if (organizer.getCreatedEvents().isEmpty()) {
+			System.out.println("You have not created any events yet.");
+		}
+		System.out.println("Choose the event you want to acess:");
+		for (int i = 0; i < organizer.getCreatedEvents().size(); i++) {
+			Event event = organizer.getCreatedEvents().get(i);
+			System.out.println((i + 1) + ". " + event);
+		}
+
+		int choiceChoosenEvent = sc.nextInt();
+		if (choiceChoosenEvent < 1 || choiceChoosenEvent > organizer.getCreatedEvents().size()) {
+			throw new DomainException("Invalid choice. Please select a correct number.");
+		}
+
+		Event choosenEvent = organizer.getCreatedEvents().get(choiceChoosenEvent - 1);
+		menuEventOrganzier();
+		return choosenEvent;
 	}
 }

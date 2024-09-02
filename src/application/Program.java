@@ -4,9 +4,9 @@ import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
 
+import model.entities.Organizer;
 import model.entities.User;
 import model.exceptions.DomainException;
-import model.exceptions.NotLoggedException;
 
 public class Program {
 
@@ -48,8 +48,12 @@ public class Program {
 					UI.JoinAnEvent(loggedUser, sc);
 					break;
 				}
-
 				case 5: {
+					if (loggedUser instanceof Organizer) {
+						UI.acessMenuEvent(loggedUser, sc);
+					} 
+				}
+				case 6: {
 					System.out.println("Exiting...");
 					sc.close();
 					return;
@@ -58,6 +62,9 @@ public class Program {
 			} catch (InputMismatchException e) {
 				System.out.println("Invalid input! Please input a number between 1 and 5!");
 				sc.nextLine();
+			}
+			catch (DomainException e) {
+				System.out.println(e.getMessage());
 			}
 		}
 	}
