@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import model.entities.Event;
+import model.entities.Item;
 import model.entities.Organizer;
 import model.entities.Participant;
 import model.entities.Payment;
@@ -141,108 +142,156 @@ public class UI {
 		return null;
 	}
 
-    public static void createAnEvent(Scanner sc, User user) {
-        if (user == null) {
-            System.out.println("You need to sign in first.");
-            return;
-        }
-        if (!(user instanceof Organizer)) {
-            System.out.println("Only organizers can create events. Please sign in with an organizer account.");
-            return;
-        }
-        
-        System.out.println("Let's create your Event!");
-        System.out.println("Type your event details:");
-        
-        System.out.print("Name: ");
-        String eventName = sc.nextLine();
-        
-        System.out.print("Place: ");
-        String eventPlace = sc.nextLine();
-        
-        System.out.print("Type a short description about this event: ");
-        String eventDescription = sc.nextLine();
-        
-        LocalDateTime eventDate = null;
-        while (eventDate == null) {
-            try {
-                System.out.print("Event date (dd/MM/yyyy HH:mm): ");
-                String eventDateStr = sc.nextLine();
-                eventDate = LocalDateTime.parse(eventDateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-                if (eventDate.isBefore(LocalDateTime.now())) {
-                    throw new DomainException("Event date must be a future date.");
-                }
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date and hour format! Please try again.");
-            } catch (DomainException e) {
-                System.out.println("Error! " + e.getMessage());
-                eventDate = null;
-            }
-        }
+	public static void createAnEvent(Scanner sc, User user) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
+		if (user == null) {
+			System.out.println("You need to sign in first.");
+			return;
+		}
+		if (!(user instanceof Organizer)) {
+			System.out.println("Only organizers can create events. Please sign in with an organizer account.");
+			return;
+		}
 
-        boolean isRestrictedForMore18 = false;
-        while (true) {
-            try {
-                System.out.print("Is this event restricted for +18? (y/n): ");
-                String answerRestrictedEvent = sc.next();
-                if (!answerRestrictedEvent.equalsIgnoreCase("y") && !answerRestrictedEvent.equalsIgnoreCase("n")) {
-                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-                }
-                isRestrictedForMore18 = answerRestrictedEvent.equalsIgnoreCase("y");
-                break;
-            } catch (DomainException e) {
-                System.out.println("Error! " + e.getMessage());
-            }
-        }
+		System.out.println("Let's create your Event!");
+		System.out.println("Type your event details:");
 
-        boolean demandsPayment = false;
-        double paymentAmount = 0.0;
-        while (true) {
-            try {
-                System.out.print("The event demands payment to participate? (y/n): ");
-                String answerDemandsPayment = sc.next();
-                if (!answerDemandsPayment.equalsIgnoreCase("y") && !answerDemandsPayment.equalsIgnoreCase("n")) {
-                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-                }
-                demandsPayment = answerDemandsPayment.equalsIgnoreCase("y");
-                if (demandsPayment) {
-                    System.out.print("Type the payment's value: $ ");
-                    paymentAmount = sc.nextDouble();
-                    if (paymentAmount < 0) {
-                        throw new DomainException("Payment value cannot be negative.");
-                    }
-                    sc.nextLine();
-                }
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid value! Please enter a valid number.");
-                sc.nextLine();
-            } catch (DomainException e) {
-                System.out.println("Error! " + e.getMessage());
-            }
-        }
+		System.out.print("Name: ");
+		String eventName = sc.nextLine();
 
-        boolean demandsItems = false;
-        while (true) {
-            try {
-                System.out.print("The event demands that participants bring items to participate? (y/n): ");
-                String answerDemandsItems = sc.next();
-                if (!answerDemandsItems.equalsIgnoreCase("y") && !answerDemandsItems.equalsIgnoreCase("n")) {
-                    throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
-                }
-                demandsItems = answerDemandsItems.equalsIgnoreCase("y");
-                break;
-            } catch (DomainException e) {
-                System.out.println("Error! " + e.getMessage());
-            }
-        }
+		System.out.print("Place: ");
+		String eventPlace = sc.nextLine();
 
-        Event newEvent = new Event(eventName, eventPlace, eventDescription, eventDate, isRestrictedForMore18, demandsPayment, demandsItems, user, paymentAmount);
-        Organizer organizer = (Organizer) user;
-        organizer.addCreatedEvent(newEvent);
-        System.out.println("Event created successfully!");
-    }
+		System.out.print("Type a short description about this event: ");
+		String eventDescription = sc.nextLine();
 
+		LocalDateTime eventDate = null;
+		while (eventDate == null) {
+			try {
+				System.out.print("Event date (dd/MM/yyyy HH:mm): ");
+				String eventDateStr = sc.nextLine();
+				eventDate = LocalDateTime.parse(eventDateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+				if (eventDate.isBefore(LocalDateTime.now())) {
+					throw new DomainException("Event date must be a future date.");
+				}
+			} catch (DateTimeParseException e) {
+				System.out.println("Invalid date and hour format! Please try again.");
+			} catch (DomainException e) {
+				System.out.println("Error! " + e.getMessage());
+				eventDate = null;
+			}
+		}
+
+		boolean isRestrictedForMore18 = false;
+		while (true) {
+			try {
+				System.out.print("Is this event restricted for +18? (y/n): ");
+				String answerRestrictedEvent = sc.next();
+				if (!answerRestrictedEvent.equalsIgnoreCase("y") && !answerRestrictedEvent.equalsIgnoreCase("n")) {
+					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+				}
+				isRestrictedForMore18 = answerRestrictedEvent.equalsIgnoreCase("y");
+				break;
+			} catch (DomainException e) {
+				System.out.println("Error! " + e.getMessage());
+			}
+		}
+
+		boolean demandsPayment = false;
+		double paymentAmount = 0.0;
+		while (true) {
+			try {
+				System.out.print("The event demands payment to participate? (y/n): ");
+				String answerDemandsPayment = sc.next();
+				if (!answerDemandsPayment.equalsIgnoreCase("y") && !answerDemandsPayment.equalsIgnoreCase("n")) {
+					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+				}
+				demandsPayment = answerDemandsPayment.equalsIgnoreCase("y");
+				if (demandsPayment) {
+					System.out.print("Type the payment's value: $ ");
+					paymentAmount = sc.nextDouble();
+					if (paymentAmount < 0) {
+						throw new DomainException("Payment value cannot be negative.");
+					}
+					sc.nextLine();
+				}
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid value! Please enter a valid number.");
+				sc.nextLine();
+			} catch (DomainException e) {
+				System.out.println("Error! " + e.getMessage());
+			}
+		}
+
+		boolean demandsItems = false;
+		while (true) {
+			try {
+				System.out.print("The event demands that participants bring items to participate? (y/n): ");
+				String answerDemandsItems = sc.next();
+				if (!answerDemandsItems.equalsIgnoreCase("y") && !answerDemandsItems.equalsIgnoreCase("n")) {
+					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+				}
+				demandsItems = answerDemandsItems.equalsIgnoreCase("y");
+				break;
+			} catch (DomainException e) {
+				System.out.println("Error! " + e.getMessage());
+			}
+		}
+
+		Event newEvent = new Event(eventName, eventPlace, eventDescription, eventDate, isRestrictedForMore18,
+				demandsPayment, demandsItems, user, paymentAmount);
+
+		if (demandsItems) {
+			int totalItems = 0;
+			while (true) {
+				try {
+					System.out.print("How many items are required for the event? ");
+					totalItems = sc.nextInt();
+					sc.nextLine();
+					if (totalItems <= 0) {
+						throw new DomainException("The number of items must be bigger than zero.");
+					}
+					break;
+				} catch (InputMismatchException e) {
+					System.out.println("Invalid input. Please input a valid number.");
+				} catch (DomainException e) {
+					System.out.println("Error! " + e.getMessage());
+				}
+			}
+
+			for (int i = 0; i < totalItems; i++) {
+				int itemQuantity = 0;
+				String itemName = "";
+				while (true) {
+					try {
+						System.out.print("Item " + (i + 1) + " name: ");
+						itemName = sc.nextLine();
+						System.out.print("Item " + (i + 1) + " quantity: ");
+						itemQuantity = sc.nextInt();
+						sc.nextLine();
+						if (itemQuantity <= 0) {
+							throw new DomainException("Item quantity must be bigger than zero");
+						}
+						break;
+					} catch (InputMismatchException e) {
+						System.out.println("Invalid input! Please enter a valid input.");
+						sc.nextLine();
+					} catch (DomainException e) {
+						System.out.println("Error! " + e.getMessage());
+					}
+				}
+				Item item = new Item(itemName, itemQuantity);
+				newEvent.addItemsInTheEvent(item);
+			}
+		}
+
+		Organizer organizer = (Organizer) user;
+		organizer.addCreatedEvent(newEvent);
+		eventsCreated.add(newEvent);
+		System.out.println("Event created successfully!");
+		System.out.println(ANSI_RESET);
+	}
 
 	public static boolean processPayment(User user, Event event, Scanner sc) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
@@ -314,6 +363,47 @@ public class UI {
 			boolean sucess = processPayment(user, choosenEvent, sc);
 			if (!sucess) {
 				throw new DomainException("Failed processing your payment!");
+			}
+		}
+		if (choosenEvent.getDemandsItems()) {
+			System.out.println("This event requires you to bring an item to participate.");
+			System.out.println("Here is the items the event need: ");
+			List<Item> items = choosenEvent.getEventItems();
+			if (items.isEmpty()) {
+				throw new DomainException("There are no items listed for this event.");
+			}
+
+			for (int i = 0; i < items.size(); i++) {
+				Item item = items.get(i);
+				System.out.println((i + 1) + " - Name: " + item.getName() + ", Quantity needed: " + item.getQuantity());
+			}
+			int choosenItem = -1;
+			int quantityChoosenItem = 0;
+
+			while (true) {
+				try {
+					System.out.print("Choose the number of the item you want to bring: ");
+					choosenItem = sc.nextInt();
+					sc.nextLine();
+					if (choosenItem < 1 || choosenItem > items.size()) {
+						throw new DomainException("Invalid item number. Please select a valid number");
+					}
+					Item selectedItem = items.get(choosenItem - 1);
+					System.out.print("Enter the quantity of the choosen item: ");
+					quantityChoosenItem = sc.nextInt();
+					if (quantityChoosenItem <= 0 || quantityChoosenItem > selectedItem.getQuantity()) {
+						throw new DomainException(
+								"Invalid quantity. Please enter a number betweetn 1 and " + selectedItem.getQuantity());
+					}
+					selectedItem.setQuantity(selectedItem.getQuantity() - quantityChoosenItem);
+					System.out.println(
+							"You have choose to bring " + quantityChoosenItem + " of " + selectedItem.getName());
+					break;
+				} catch (InputMismatchException e) {
+					System.out.println("Invalid input! Please enter a valid input.");
+				} catch (DomainException e) {
+					System.out.println("Error! " + e.getMessage());
+				}
 			}
 		}
 		if (choosenEvent.addParticipantInTheEvent(user)) {

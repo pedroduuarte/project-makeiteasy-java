@@ -13,6 +13,11 @@ public class Item {
 		this.designatedUser = designatedUser;
 		this.event = event;
 	}
+	
+	public Item(String name, int quantity) {
+		this.name = name;
+		this.quantity = quantity;
+	}
 
 	public String getName() {
 		return name;

@@ -19,6 +19,7 @@ public class Event {
 	private double paymentAmount;
 
 	List<User> usersOnTheEvent = new ArrayList<>();
+	List<Item> eventItems = new ArrayList<>();
 
 	public Event(String eventName, String eventPlace, String eventDescription, LocalDateTime eventDateTime,
 			boolean isRestrictedForMore18, boolean demandsPayment, boolean demandsItems, User userOrganizer,
@@ -106,6 +107,10 @@ public class Event {
 		this.paymentAmount = paymentAmount;
 	}
 	
+	public List<Item> getEventItems() {
+		return eventItems;
+	}
+	
 	public boolean checkIfTheParticipantHasEnoughAge(User user) {
 		if (user.getUserAge() < 18 && this.getIsRestrictedForMore18() == true) {
 			return false;
@@ -126,6 +131,16 @@ public class Event {
 		usersOnTheEvent.add(user);
 		participant.addParticipatedEvent(this);
 		System.out.println("User " + user.getName() + " is now participating in the event!");
+		return true;
+	}
+	
+	public boolean addItemsInTheEvent(Item item) {
+		if (!demandsItems) {
+			System.out.println("This event don't demands participants do bring items to participate.");
+			return false;
+		}
+		eventItems.add(item);
+		System.out.println(item.getName() + " added in the event.");
 		return true;
 	}
 

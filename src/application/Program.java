@@ -60,7 +60,7 @@ public class Program {
 				}
 				}
 			} catch (InputMismatchException e) {
-				System.out.println("Invalid input! Please input a number between 1 and 5!");
+				System.out.println(e.getMessage());
 				sc.nextLine();
 			}
 			catch (DomainException e) {
