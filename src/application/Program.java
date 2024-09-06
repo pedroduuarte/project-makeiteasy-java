@@ -24,8 +24,8 @@ public class Program {
 				UI.showMenu();
 				System.out.print("Type your option: ");
 				int option = sc.nextInt();
-				if (option < 1 || option > 5) {
-					throw new InputMismatchException("Invalid input! Please inout a number between 1 and 5!");
+				if (option < 1 || option > 7) {
+					throw new InputMismatchException("Invalid input! Please inout a number between 1 and 7!");
 				}
 				sc.nextLine();
 
@@ -50,10 +50,15 @@ public class Program {
 				}
 				case 5: {
 					if (loggedUser instanceof Organizer) {
-						UI.acessMenuEvent(loggedUser, sc);
+						MenuOrganizer.acessMenuEvent(loggedUser, sc);
 					} 
+					break;
 				}
 				case 6: {
+					UI.showUserEvents(loggedUser);
+					break;
+				}
+				case 7: {
 					System.out.println("Exiting...");
 					sc.close();
 					return;

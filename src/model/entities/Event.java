@@ -18,7 +18,7 @@ public class Event {
 	private User userOrganizer;
 	private double paymentAmount;
 
-	List<User> usersOnTheEvent = new ArrayList<>();
+	List<Participant> usersOnTheEvent = new ArrayList<>();
 	List<Item> eventItems = new ArrayList<>();
 
 	public Event(String eventName, String eventPlace, String eventDescription, LocalDateTime eventDateTime,
@@ -111,6 +111,10 @@ public class Event {
 		return eventItems;
 	}
 	
+	public List<Participant> getUsersOnTheEvent() {
+		return usersOnTheEvent;
+	}
+	
 	public boolean checkIfTheParticipantHasEnoughAge(User user) {
 		if (user.getUserAge() < 18 && this.getIsRestrictedForMore18() == true) {
 			return false;
@@ -128,7 +132,7 @@ public class Event {
 			throw new DomainException("User" + participant.getName() + " is already participating in this event.");
 		}
 
-		usersOnTheEvent.add(user);
+		usersOnTheEvent.add(participant);
 		participant.addParticipatedEvent(this);
 		System.out.println("User " + user.getName() + " is now participating in the event!");
 		return true;

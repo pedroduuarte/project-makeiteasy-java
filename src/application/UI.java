@@ -28,25 +28,15 @@ public class UI {
 
 	public static void showMenu() {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
-		System.out.println("=============== MENU ===============");
-		System.out.println("| 1. Sign in with an account       |");
-		System.out.println("| 2. Create an account             |");
-		System.out.println("| 3. Create a new event            |");
-		System.out.println("| 4. Join an event                 |");
-		System.out.println("| 5. Acess organizer menu          |");
-		System.out.println("| 6. Exit                          |");
-		System.out.println("====================================");
-		System.out.println(ANSI_RESET);
-	}
-
-	public static void menuEventOrganzier() {
-		System.out.println(ANSI_PURPLE_BACKGROUND);
-		System.out.println("=============== EVENT MENU ===============");
-		System.out.println("| 1. See all participants                 |");
-		System.out.println("| 2. Remove a participant from the event. |");
-		System.out.println("| 3. See all payments from the event.      |");
-		System.out.println("| 4. See all your events created          |");
-		System.out.println("==========================================");
+		System.out.println("==================== MENU ====================");
+		System.out.println("| 1. Sign in with an account                  |");
+		System.out.println("| 2. Create an account                        |");
+		System.out.println("| 3. Create a new event                       |");
+		System.out.println("| 4. Join an event                            |");
+		System.out.println("| 5. Acess organizer menu                     |");
+		System.out.println("| 6. Show all events you created/participated |");
+		System.out.println("| 7. Exit                                    |");
+		System.out.println("==============================================");
 		System.out.println(ANSI_RESET);
 	}
 
@@ -128,7 +118,6 @@ public class UI {
 			}
 
 			System.out.print("Type your CPF: ");
-			sc.nextLine();
 			String searchCpf = sc.nextLine();
 			for (User user : usersList) {
 				if (user.getCpf().equals(searchCpf)) {
@@ -447,29 +436,5 @@ public class UI {
 			System.out.println("Invalid user type.");
 		}
 		System.out.println(ANSI_RESET);
-	}
-
-	public static Event acessMenuEvent(User user, Scanner sc) {
-		if (!(user instanceof Organizer)) {
-			throw new DomainException("Please sign with an organizer account first.");
-		}
-		Organizer organizer = (Organizer) user;
-		if (organizer.getCreatedEvents().isEmpty()) {
-			System.out.println("You have not created any events yet.");
-		}
-		System.out.println("Choose the event you want to acess:");
-		for (int i = 0; i < organizer.getCreatedEvents().size(); i++) {
-			Event event = organizer.getCreatedEvents().get(i);
-			System.out.println((i + 1) + ". " + event);
-		}
-
-		int choiceChoosenEvent = sc.nextInt();
-		if (choiceChoosenEvent < 1 || choiceChoosenEvent > organizer.getCreatedEvents().size()) {
-			throw new DomainException("Invalid choice. Please select a correct number.");
-		}
-
-		Event choosenEvent = organizer.getCreatedEvents().get(choiceChoosenEvent - 1);
-		menuEventOrganzier();
-		return choosenEvent;
 	}
 }
