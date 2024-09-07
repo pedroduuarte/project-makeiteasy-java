@@ -6,6 +6,7 @@ import java.util.Scanner;
 import model.entities.Event;
 import model.entities.Organizer;
 import model.entities.Participant;
+import model.entities.Payment;
 import model.entities.User;
 import model.exceptions.DomainException;
 
@@ -40,7 +41,7 @@ public class MenuOrganizer {
 				break;
 			}
 			case 3: {
-				System.out.println("Showing all payments...");
+				showAllPayments(event);
 				break;
 			}
 			case 4: {
@@ -110,5 +111,17 @@ public class MenuOrganizer {
 		Participant participantToRemove = participants.get(choice - 1);
 		event.getUsersOnTheEvent().remove(participantToRemove);
 		System.out.println("Participant " + participantToRemove + " was removed.");		
+	}
+	
+	public static void showAllPayments(Event event) {
+		List<Payment> payments = event.getPayments();
+		if (payments.isEmpty()) {
+			System.out.println("There is no payments recorded for this event yet.");
+			return;
+		}
+		System.out.println("Payment for event: " + event.getEventName());
+		for (Payment p : payments) {
+			System.out.println(p);
+		}	
 	}
 }

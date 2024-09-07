@@ -19,6 +19,7 @@ public class Event {
 	private double paymentAmount;
 
 	List<Participant> usersOnTheEvent = new ArrayList<>();
+	List<Payment> payments = new ArrayList<>();
 	List<Item> eventItems = new ArrayList<>();
 
 	public Event(String eventName, String eventPlace, String eventDescription, LocalDateTime eventDateTime,
@@ -109,6 +110,10 @@ public class Event {
 	
 	public List<Item> getEventItems() {
 		return eventItems;
+	}
+	
+	public List<Payment> getPayments() {
+		return payments;
 	}
 	
 	public List<Participant> getUsersOnTheEvent() {

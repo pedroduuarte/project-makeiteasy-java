@@ -29,12 +29,12 @@ public class UI {
 	public static void showMenu() {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		System.out.println("==================== MENU ====================");
-		System.out.println("| 1. Sign in with an account                  |");
-		System.out.println("| 2. Create an account                        |");
-		System.out.println("| 3. Create a new event                       |");
-		System.out.println("| 4. Join an event                            |");
-		System.out.println("| 5. Acess organizer menu                     |");
-		System.out.println("| 6. Show all events you created/participated |");
+		System.out.println("| 1. Sign in with an account                 |");
+		System.out.println("| 2. Create an account                       |");
+		System.out.println("| 3. Create a new event                      |");
+		System.out.println("| 4. Join an event                           |");
+		System.out.println("| 5. Acess organizer menu                    |");
+		System.out.println("| 6. Show all events you created/participated|");
 		System.out.println("| 7. Exit                                    |");
 		System.out.println("==============================================");
 		System.out.println(ANSI_RESET);
@@ -284,15 +284,17 @@ public class UI {
 
 	public static boolean processPayment(User user, Event event, Scanner sc) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
+		Participant participant = (Participant) user;
+		List<Payment> payments = event.getPayments();
 		if (!event.getDemandsPayment()) {
-			System.out.println("This event don't requires payment.");
+			System.out.println("This event doesn't requires payment.");
 			return true;
 		}
 		System.out.printf("This event demands a payment value of: $ %.2f%n", event.getPaymentAmount());
 		System.out.print("Type the method of payment: ");
 		String paymentMethod = sc.nextLine();
 
-		Payment payment = new Payment(event.getPaymentAmount(), LocalDateTime.now(), paymentMethod);
+		Payment payment = new Payment(participant, event.getPaymentAmount(), LocalDateTime.now(), paymentMethod);
 
 		try {
 			payment.isValidPaymentMethod();
@@ -304,14 +306,20 @@ public class UI {
 
 			if (payment.getStatus().equals("Completed")) {
 				event.addParticipantInTheEvent(user);
+				payments.add(payment);
 				return true;
 			}
+			else {
+				System.out.println("Payment not completed. You cannot join the event.");
+				return false;
+			}
+			
 		} catch (DomainException e) {
 			System.out.println(e.getMessage());
 			return false;
+		} finally {
+			System.out.println(ANSI_RESET);
 		}
-
-		return false;
 	}
 
 	public static void JoinAnEvent(User user, Scanner sc) {
@@ -396,7 +404,7 @@ public class UI {
 			}
 		}
 		if (choosenEvent.addParticipantInTheEvent(user)) {
-			System.out.println("You're participating at this event!");
+			System.out.println("Sucess!");
 		}
 		System.out.println(ANSI_RESET);
 

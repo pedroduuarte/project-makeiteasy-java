@@ -8,6 +8,7 @@ import model.exceptions.DomainException;
 
 public class Payment implements SystemTax {
 
+	private Participant participant;
 	private double value;
 	private LocalDateTime instantOfPayment;
 	private String typeOfPayment;
@@ -15,11 +16,16 @@ public class Payment implements SystemTax {
 
 	private static final List<String> validPaymentsMethods = Arrays.asList("Credit Card", "Debit Card", "PIX");
 
-	public Payment(double value, LocalDateTime instantOfPayment, String typeOfPayment) {
+	public Payment(Participant participant, double value, LocalDateTime instantOfPayment, String typeOfPayment) {
+		this.participant = participant;
 		this.value = value;
 		this.instantOfPayment = instantOfPayment;
 		this.typeOfPayment = typeOfPayment;
 		this.status = "Pending";
+	}
+	
+	public Participant getParticipant() {
+		return participant;
 	}
 
 	public double getValue() {
@@ -68,6 +74,21 @@ public class Payment implements SystemTax {
 
 	public double calculateFinalValue() {
 		return this.value + calculateTax(value);
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Participant name: ");
+		sb.append(participant.getName() + "\n");
+		sb.append("Value of: R$ ");
+		sb.append(value + "\n");
+		sb.append("Method of payment: ");
+		sb.append(typeOfPayment + "\n");
+		sb.append("Staus: ");
+		sb.append(status + "\n");
+		
+		return sb.toString();
+		
 	}
 
 }
