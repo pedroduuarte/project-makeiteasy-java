@@ -43,59 +43,109 @@ public class UI {
 	public static User createAnAccount(Scanner sc) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		User newUser = null;
-		try {
-			System.out.println("We need just some informations to make your account!");
-			System.out.print("Name: ");
-			String name = sc.nextLine();
 
-			System.out.print("CPF (only numbers): ");
-			String cpf = sc.nextLine();
-			if (!cpf.matches("\\d{11}")) {
-				throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+		System.out.println("We need just some informations to make your account!");
+		String name = "";
+		while (true) {
+			try {
+				System.out.print("Name: ");
+				name = sc.nextLine();
+				if (name.trim().isEmpty()) {
+					throw new DomainException("Name cannot be empty. ");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
 			}
-
-			System.out.print("E-mail: ");
-			String email = sc.nextLine();
-			if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-				throw new DomainException("Invalid email format!");
-			}
-
-			System.out.print("Birth date (dd/MM/yyyy): ");
-			LocalDate birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-			sc.nextLine();
-
-			System.out.print("Phone number: ");
-			String phoneNumber = sc.nextLine();
-
-			System.out.print("Address: ");
-			String address = sc.nextLine();
-
-			System.out.println("What type of account you want to create? Event organizer or Event participant?");
-			System.out.print("Type 'o' for ORGANIZER or type 'p' for PARTICIPANT: ");
-
-			String accountType = sc.next();
-			sc.nextLine();
-
-			if (accountType.equalsIgnoreCase("o")) {
-				newUser = new Organizer(name, cpf, email, birthDate, phoneNumber, address);
-			} else if (accountType.equalsIgnoreCase("p")) {
-				newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
-			} else {
-				throw new DomainException("Please input a valid option. 'o' or 'p'.");
-			}
-
-			usersList.add(newUser);
-			System.out.println("Account created successfully! Welcome " + newUser.getName());
-
-		} catch (InputMismatchException e) {
-			System.out.println("Invalid input format. Please try again.");
-		} catch (DateTimeParseException e) {
-			System.out.println("Invalid date format! Please use dd/MM/yyyy.");
-		} catch (DomainException e) {
-			System.out.println(e.getMessage());
-		} finally {
-			System.out.println(ANSI_RESET);
 		}
+		String cpf = "";
+		while (true) {
+			try {
+				System.out.print("CPF (only numbers): ");
+				cpf = sc.nextLine();
+				if (!cpf.matches("\\d{11}")) {
+					throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		String email = "";
+		while (true) {
+			try {
+				System.out.print("E-mail: ");
+				email = sc.nextLine();
+				if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+					throw new DomainException("Invalid email format!");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		LocalDate birthDate = null;
+		while (birthDate == null) {
+			try {
+				System.out.print("Birth date (dd/MM/yyyy): ");
+				birthDate = LocalDate.parse(sc.next(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+				sc.nextLine();
+			} catch (DateTimeParseException e) {
+				System.out.println("Invalid date format! Please enter the date in dd/MM/yyyy format.");
+				sc.nextLine();
+			}
+		}
+
+		String phoneNumber = "";
+		while (true) {
+			try {
+				System.out.print("Phone number: ");
+				phoneNumber = sc.nextLine();
+				if (phoneNumber.trim().isEmpty()) {
+					throw new DomainException("Phone number cannot be empty.");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		String address = "";
+		while (true) {
+			try {
+				System.out.print("Address: ");
+				address = sc.nextLine();
+				if (address.trim().isEmpty()) {
+					throw new DomainException("Address cannot be empty.");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		String accountType = "";
+		while (true) {
+			try {
+				System.out.println("What type of account do you want to create? Event organizer or Event participant?");
+				System.out.print("Type 'o' for ORGANIZER or type 'p' for PARTICIPANT: ");
+				accountType = sc.next();
+				sc.nextLine();
+				if (accountType.equalsIgnoreCase("o")) {
+					newUser = new Organizer(name, cpf, email, birthDate, phoneNumber, address);
+				} else if (accountType.equalsIgnoreCase("p")) {
+					newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
+				} else {
+					throw new DomainException("Invalid option. Please type 'o' for ORGANIZER or 'p' for PARTICIPANT.");
+				}
+				break;
+			} catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		usersList.add(newUser);
+		System.out.println("Account created successfully! Welcome " + newUser.getName());
 
 		return newUser;
 	}
@@ -308,12 +358,11 @@ public class UI {
 				event.addParticipantInTheEvent(user);
 				payments.add(payment);
 				return true;
-			}
-			else {
+			} else {
 				System.out.println("Payment not completed. You cannot join the event.");
 				return false;
 			}
-			
+
 		} catch (DomainException e) {
 			System.out.println(e.getMessage());
 			return false;
@@ -323,6 +372,7 @@ public class UI {
 	}
 
 	public static void JoinAnEvent(User user, Scanner sc) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		if (user == null) {
 			throw new NotLoggedException("You need to be logged to join an event.");
 		}
@@ -350,6 +400,19 @@ public class UI {
 		}
 
 		Event choosenEvent = eventsCreated.get(choiceChooseEvent - 1);
+
+		if (choosenEvent.getUsersOnTheEvent().contains(user)) {
+			System.out.println("You are already participating in this event.");
+			return;
+		}
+
+		List<Event> userEvents = ((Participant) user).getParticipatedEvents();
+		for (Event event : userEvents) {
+			if (event.getEventDateTime().equals(choosenEvent.getEventDateTime())) {
+				System.out.println("You are already participating in another event at the same time.");
+				return;
+			}
+		}
 
 		if (!choosenEvent.checkIfTheParticipantHasEnoughAge(user)) {
 			throw new DomainException(

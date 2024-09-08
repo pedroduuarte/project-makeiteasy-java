@@ -46,17 +46,17 @@ public class MenuOrganizer {
 			}
 			case 4: {
 				System.out.println("Going back...");
-				sc.close();
 				return;
 			}
 			}			
-			System.out.println(ANSI_RESET);
 		}
 	}
 
 	public static void acessMenuEvent(User user, Scanner sc) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		if (!(user instanceof Organizer)) {
-			throw new DomainException("Please sign with an organizer account first.");
+			System.out.println("Please sign with an organizer account first.");
+			return;
 		}
 		Organizer organizer = (Organizer) user;
 		if (organizer.getCreatedEvents().isEmpty()) {
@@ -88,10 +88,12 @@ public class MenuOrganizer {
 		for (Participant participant : participants) {
 			System.out.println(participant);
 			System.out.println("-----------------------");
-		}	
+		}
+		System.out.println(ANSI_RESET);
 	}
 	
 	public static void removeAParticipantFromTheEvent(Scanner sc, Event event) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		List<Participant> participants = event.getUsersOnTheEvent();
 		if (participants.isEmpty()) {
 			System.out.println("There is no participants in the event yet.");
@@ -110,10 +112,12 @@ public class MenuOrganizer {
 		
 		Participant participantToRemove = participants.get(choice - 1);
 		event.getUsersOnTheEvent().remove(participantToRemove);
-		System.out.println("Participant " + participantToRemove + " was removed.");		
+		System.out.println("Participant " + participantToRemove + " was removed.");	
+		System.out.println(ANSI_RESET);
 	}
 	
 	public static void showAllPayments(Event event) {
+		System.out.println(ANSI_PURPLE_BACKGROUND);
 		List<Payment> payments = event.getPayments();
 		if (payments.isEmpty()) {
 			System.out.println("There is no payments recorded for this event yet.");
@@ -123,5 +127,6 @@ public class MenuOrganizer {
 		for (Payment p : payments) {
 			System.out.println(p);
 		}	
+		System.out.println(ANSI_RESET);
 	}
 }
