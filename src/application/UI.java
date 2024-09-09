@@ -15,8 +15,12 @@ import model.entities.Organizer;
 import model.entities.Participant;
 import model.entities.Payment;
 import model.entities.User;
+import model.exceptions.CpfException;
 import model.exceptions.DomainException;
+import model.exceptions.EmailException;
+import model.exceptions.InvalidOptionException;
 import model.exceptions.NotLoggedException;
+import model.exceptions.PastDateException;
 
 public class UI {
 
@@ -64,10 +68,10 @@ public class UI {
 				System.out.print("CPF (only numbers): ");
 				cpf = sc.nextLine();
 				if (!cpf.matches("\\d{11}")) {
-					throw new DomainException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
+					throw new CpfException("Invalid CPF! Please enter only numbers and exactly 11 digits.");
 				}
 				break;
-			} catch (DomainException e) {
+			} catch (CpfException e) {
 				System.out.println(e.getMessage());
 			}
 		}
@@ -78,10 +82,10 @@ public class UI {
 				System.out.print("E-mail: ");
 				email = sc.nextLine();
 				if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-					throw new DomainException("Invalid email format!");
+					throw new EmailException("Invalid email format!");
 				}
 				break;
-			} catch (DomainException e) {
+			} catch (EmailException e) {
 				System.out.println(e.getMessage());
 			}
 		}
@@ -136,10 +140,10 @@ public class UI {
 				} else if (accountType.equalsIgnoreCase("p")) {
 					newUser = new Participant(name, cpf, email, birthDate, phoneNumber, address);
 				} else {
-					throw new DomainException("Invalid option. Please type 'o' for ORGANIZER or 'p' for PARTICIPANT.");
+					throw new InvalidOptionException("Invalid option. Please type 'o' for ORGANIZER or 'p' for PARTICIPANT.");
 				}
 				break;
-			} catch (DomainException e) {
+			} catch (InvalidOptionException e) {
 				System.out.println(e.getMessage());
 			}
 		}
@@ -156,7 +160,7 @@ public class UI {
 		sc.nextLine();
 
 		if (!answer.equalsIgnoreCase("y") && !answer.equalsIgnoreCase("n")) {
-			throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+			throw new InvalidOptionException("Invalid answer! Please enter 'y' or 'n'.");
 		}
 
 		if (answer.equalsIgnoreCase("n")) {
@@ -211,11 +215,11 @@ public class UI {
 				String eventDateStr = sc.nextLine();
 				eventDate = LocalDateTime.parse(eventDateStr, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
 				if (eventDate.isBefore(LocalDateTime.now())) {
-					throw new DomainException("Event date must be a future date.");
+					throw new PastDateException("Event date must be a future date.");
 				}
 			} catch (DateTimeParseException e) {
 				System.out.println("Invalid date and hour format! Please try again.");
-			} catch (DomainException e) {
+			} catch (PastDateException e) {
 				System.out.println("Error! " + e.getMessage());
 				eventDate = null;
 			}
@@ -227,11 +231,11 @@ public class UI {
 				System.out.print("Is this event restricted for +18? (y/n): ");
 				String answerRestrictedEvent = sc.next();
 				if (!answerRestrictedEvent.equalsIgnoreCase("y") && !answerRestrictedEvent.equalsIgnoreCase("n")) {
-					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+					throw new InvalidOptionException("Invalid answer! Please enter 'y' or 'n'.");
 				}
 				isRestrictedForMore18 = answerRestrictedEvent.equalsIgnoreCase("y");
 				break;
-			} catch (DomainException e) {
+			} catch (InvalidOptionException e) {
 				System.out.println("Error! " + e.getMessage());
 			}
 		}
@@ -243,7 +247,7 @@ public class UI {
 				System.out.print("The event demands payment to participate? (y/n): ");
 				String answerDemandsPayment = sc.next();
 				if (!answerDemandsPayment.equalsIgnoreCase("y") && !answerDemandsPayment.equalsIgnoreCase("n")) {
-					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+					throw new InvalidOptionException("Invalid answer! Please enter 'y' or 'n'.");
 				}
 				demandsPayment = answerDemandsPayment.equalsIgnoreCase("y");
 				if (demandsPayment) {
@@ -269,11 +273,11 @@ public class UI {
 				System.out.print("The event demands that participants bring items to participate? (y/n): ");
 				String answerDemandsItems = sc.next();
 				if (!answerDemandsItems.equalsIgnoreCase("y") && !answerDemandsItems.equalsIgnoreCase("n")) {
-					throw new DomainException("Invalid answer! Please enter 'y' or 'n'.");
+					throw new InvalidOptionException("Invalid answer! Please enter 'y' or 'n'.");
 				}
 				demandsItems = answerDemandsItems.equalsIgnoreCase("y");
 				break;
-			} catch (DomainException e) {
+			} catch (InvalidOptionException e) {
 				System.out.println("Error! " + e.getMessage());
 			}
 		}
@@ -396,7 +400,7 @@ public class UI {
 		sc.nextLine();
 
 		if (choiceChooseEvent < 1 || choiceChooseEvent > eventsCreated.size()) {
-			throw new DomainException("Invalid choice. Please select a correct number.");
+			throw new InvalidOptionException("Invalid choice. Please select a correct number.");
 		}
 
 		Event choosenEvent = eventsCreated.get(choiceChooseEvent - 1);

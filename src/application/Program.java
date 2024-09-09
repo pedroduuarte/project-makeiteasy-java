@@ -6,7 +6,9 @@ import java.util.Scanner;
 
 import model.entities.Organizer;
 import model.entities.User;
+import model.exceptions.CpfException;
 import model.exceptions.DomainException;
+import model.exceptions.InvalidOptionException;
 
 public class Program {
 
@@ -25,7 +27,7 @@ public class Program {
 				System.out.print("Type your option: ");
 				int option = sc.nextInt();
 				if (option < 1 || option > 7) {
-					throw new InputMismatchException("Invalid input! Please inout a number between 1 and 7!");
+					throw new DomainException("Invalid input! Please inout a number between 1 and 7!");
 				}
 				sc.nextLine();
 
@@ -60,15 +62,19 @@ public class Program {
 				}
 				case 7: {
 					System.out.println("Exiting...");
+					System.exit(7);
 					sc.close();
 					return;
 				}
 				}
 			} catch (InputMismatchException e) {
-				System.out.println(e.getMessage());
+				System.out.println("Please input a number.");
 				sc.nextLine();
 			}
 			catch (DomainException e) {
+				System.out.println(e.getMessage());
+			}
+			catch (InvalidOptionException e) {
 				System.out.println(e.getMessage());
 			}
 		}

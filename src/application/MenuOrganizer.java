@@ -9,6 +9,7 @@ import model.entities.Participant;
 import model.entities.Payment;
 import model.entities.User;
 import model.exceptions.DomainException;
+import model.exceptions.InvalidOptionException;
 
 public class MenuOrganizer {
 	
@@ -29,7 +30,7 @@ public class MenuOrganizer {
 			int option = sc.nextInt();
 			sc.nextLine();
 			if (option <= 0 || option > 4) {
-				throw new DomainException("Invalid option. Please choose an option between 1 and 4.");
+				throw new InvalidOptionException("Invalid option. Please choose an option between 1 and 4.");
 			}
 			switch (option) {
 			case 1: {
