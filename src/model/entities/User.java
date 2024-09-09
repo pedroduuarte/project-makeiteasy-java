@@ -72,12 +72,12 @@ public class User {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Name: ");
-		sb.append(name + "\n");
-		sb.append("Email: ");
-		sb.append(email + "\n");
-		sb.append("Telefone: ");
-		sb.append(phoneNumber + "\n");
+		sb.append("| Name: ");
+		sb.append(name + "  |\n");
+		sb.append("| Email: ");
+		sb.append(email + "  |\n");
+		sb.append("| Telefone: ");
+		sb.append(phoneNumber + "  |\n");
 
 		return sb.toString();
 	}

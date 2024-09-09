@@ -490,7 +490,7 @@ public class UI {
 			if (createdEvents.isEmpty()) {
 				System.out.println("You have not created any events yet.");
 			} else {
-				System.out.println("Events created by you:");
+				System.out.println("=== Events created by you: ===");
 				for (Event event : createdEvents) {
 					System.out.println(event);
 				}

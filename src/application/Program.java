@@ -64,7 +64,6 @@ public class Program {
 					System.out.println("Exiting...");
 					System.exit(7);
 					sc.close();
-					return;
 				}
 				}
 			} catch (InputMismatchException e) {

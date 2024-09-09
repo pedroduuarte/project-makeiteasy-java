@@ -17,8 +17,8 @@ public class MenuOrganizer {
 	public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
 	
 	public static void menuEventOrganzier(Scanner sc, Event event) {
-		System.out.println(ANSI_PURPLE_BACKGROUND);
 		while (true) {
+			System.out.println(ANSI_PURPLE_BACKGROUND);
 			System.out.println("=============== EVENT MENU ===============");
 			System.out.println("| 1. See all participants                 |");
 			System.out.println("| 2. Remove a participant from the event  |");
@@ -64,12 +64,11 @@ public class MenuOrganizer {
 			System.out.println("You have not created any events yet.");
 			return;
 		}
-		System.out.println("Choose the event you want to acess:");
 		for (int i = 0; i < organizer.getCreatedEvents().size(); i++) {
 			Event event = organizer.getCreatedEvents().get(i);
 			System.out.println((i + 1) + ". " + event);
 		}
-
+		System.out.println("Choose the event you want to acess:");
 		int choiceChoosenEvent = sc.nextInt();
 		sc.nextLine();
 		if (choiceChoosenEvent < 1 || choiceChoosenEvent > organizer.getCreatedEvents().size()) {
@@ -120,6 +119,9 @@ public class MenuOrganizer {
 	public static void showAllPayments(Event event) {
 		System.out.println(ANSI_PURPLE_BACKGROUND);
 		List<Payment> payments = event.getPayments();
+		if (!event.getDemandsPayment()) {
+			System.out.println("This event doesn't requires payments to participate");
+		}
 		if (payments.isEmpty()) {
 			System.out.println("There is no payments recorded for this event yet.");
 			return;

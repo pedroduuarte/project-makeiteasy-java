@@ -156,12 +156,12 @@ public class Event {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Name: ");
-		sb.append(eventName + " // ");
+		sb.append("|| Name: ");
+		sb.append(eventName + " ||\n|| ");
 		sb.append("Place: ");
-		sb.append(eventPlace + " // ");
+		sb.append(eventPlace + " ||\n|| ");
 		sb.append("Date: ");
-		sb.append(eventDateTime + " // " + "\n");
+		sb.append(eventDateTime + " ||\n");
 
 		return sb.toString();
 	}
